@@ -17,7 +17,6 @@
 //Definiëring van de 4 (servo)motoren: 
       Servo servo_rotatie;      //draaiing schijf
       Servo servo_translatie;   //verplaatsing volledige systeem
-      Servo servo_band;         //beweging van de rolband
       Servo servo_bakje;        //aansturing voor het bakje
 
 //Definiëring gewichtssensor:
@@ -33,7 +32,6 @@ void setup() {
   //De pinnen voor de servomotoren (tijdelijk)
   servo_rotatie.attach(2);
   servo_translatie.attach(3);
-  servo_band.attach(4);
   servo_bakje.attach(5);
 }
 
@@ -66,7 +64,7 @@ void loop() {
   if (fase2) {
     //Translatie van systeem via servomotor_translatie
     
-    //rotatie rolband van servomotor_rolband
+    //rotatie rolband via DC motor
     
     //activatie meten van de weegschaal
     
