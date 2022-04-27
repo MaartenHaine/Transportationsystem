@@ -33,7 +33,7 @@ void continuous(int pin, int hoek) {
   servo_rotatie.write(hoek);
 }
 
-void search(){
+void search(right){
   //IN EEN SNELLE LUS!!!!
   // Clears the trigPin condition
   digitalWrite(trigPin, LOW);
@@ -51,19 +51,13 @@ void search(){
   //Serial.print(distance);
   //Serial.println(" cm");
   if ((distance <= 42) and (distance >= 10) {
-    return true;
+    return [true, right];
   }
-  else if (right > -45 and right < 45){
+  else if (right >= 0 and right < 180){ //right wordt gebruikt om huidige positie te definiëren
     continuous( ,85);
     delay(10);
     continuous( ,90);
     right += 5;
   }
-  else {
-    continuous( ,95);
-    delay(10);
-    continuous( ,90);
-    right -= 5;
-  }
-  return false;
+  return [false, right];
 }
