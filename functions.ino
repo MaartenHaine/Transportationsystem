@@ -26,7 +26,7 @@ void loop() {
 }
   
 
-void servo(int pos){
+void servo270(int pos){
   pos =(180*pos)/270;
   servo_translatie.write(pos);
 }
@@ -39,34 +39,34 @@ void continuous(int pin, int hoek) {
 void search(){
   //IN EEN SNELLE LUS!!!!
   // Clears the trigPin condition
-   digitalWrite(trigPin, LOW);
-   delayMicroseconds(2);
-   // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
-   digitalWrite(trigPin, HIGH);
-   delayMicroseconds(10);
-   digitalWrite(trigPin, LOW);
-   // Reads the echoPin, returns the sound wave travel time in microseconds
-   duration = pulseIn(echoPin, HIGH);
-   // Calculating the distance
-   distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-   // Displays the distance on the Serial Monitor
-   //Serial.print("Distance: ");
-   //Serial.print(distance);
-   //Serial.println(" cm");
-   bool rolbandisbijbakjes = rolbandisbijbakjes;
-   bool bakjelinks = bakjelinks; 
-   bool bakjerechts = bakjerechts;
-   float afstandtotbakjes = afstandtotbakjes;
-   if (distance == afstandtotbakjes) {
-     bool rolbandisbijbakjes = true;
-   }
-   if (rolbandisbijbakjes == true) {
-     if (bakjelinks = true) {
-       //draai rolband naar links
-     }
-     else if (bakjerechts = true) {
-       //draai rolband naar rechts
-     }
-   
-   } 
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  // Displays the distance on the Serial Monitor
+  //Serial.print("Distance: ");
+  //Serial.print(distance);
+  //Serial.println(" cm");
+  if ((distance <= 42) and (distance >= 10) {
+    return true;
+  }
+  else if (right > -45 and right < 45){
+    continuous( ,85);
+    delay(10);
+    continuous( ,90);
+    right += 5
+  }
+  else {
+    continuous( ,95);
+    delay(10);
+    continuous( ,90);
+    right -= 5
+  }
+  } 
 }
