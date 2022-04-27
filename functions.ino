@@ -17,12 +17,9 @@ void setup() {
   bool rolbandisbijbakjes = false;
   bool bakjelinks = false; //ligt eraan welk bakje we moeten gebruiken
   bool bakjerechts = false;
-
 }
 
 void loop() {
-  
-    
 }
   
 
@@ -60,13 +57,13 @@ void search(){
     continuous( ,85);
     delay(10);
     continuous( ,90);
-    right += 5
+    right += 5;
   }
   else {
     continuous( ,95);
     delay(10);
     continuous( ,90);
-    right -= 5
+    right -= 5;
   }
-  } 
+  return false;
 }
