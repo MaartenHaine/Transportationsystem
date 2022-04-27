@@ -3,9 +3,14 @@
 
 //import commands app
 
+//Pins
+int contpin = ;
+
+
 //WIFI MODULE STUFF
 /* Als je je Arduino code wilt testen zonder ArduinoShield, zet de boolean withWifi dan op False! Je kan dan in de Seriële monitor de commando's ingeven die je normaal via de app
 zou versturen. Dit is ideaal om je hele Arduino code te debuggen. De monitor print ook uit wat hij normaal via Wifi naar de app zou sturen. Zo kan je dus perfect zowel je app
+
 als je Arduino code al maken zonder Shield!
 
 Bijvoorbeeld als je de demo test kan je in de seriele monitor SERVO/12150 ingeven om servo nummer 12 in een hoek van 150 graden te zetten.
@@ -42,14 +47,6 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
   bool fase6 = false; //reset system
 
 
-//Definiëring van de 4 (servo)motoren: 
-      Servo servo_rotatie;      //draaiing schijf
-      Servo servo_translatie;   //verplaatsing volledige systeem
-      Servo servo_bakje;        //aansturing voor het bakje
-
-//Definiëring gewichtssensor:
-  DFRobot_HX711 MyScale(2, 3); //pinnen nog te bepalen
-
 //Invoering grenswaarde gewicht (invoer via app!!)
   int border_weight = 50;
 
@@ -71,76 +68,88 @@ void loop() {
   //Voer het commando uit als er iets werd ontvangen
   if (command.length()>0){
     Serial.println("Ontvangen commando: " + command); // Print het commando (debug)
-    //Splits het command op in commando/parameters
-    String commando = command.substring(0,command.indexOf('/'));
-    String parameters = command.substring(command.indexOf('/')+1);
-    doCommand(commando,parameters); //Start eig al u functies dit gaan wij dus moeten aanpassen.
-  }
-  
-  if (fase1){
-    if (type1){
-      //draaien naar links servomotor_rotatie
-      servo_rotatie.write(130); //exacte waarde nog te bepalen
+    
+    if (fase1) {
+      if(type1){
+        fase1tijd = ; //deze is de hoek voor de fase 1 continuous draaiing
+        continous(contpin, 65);
+        delay(fase1tijd);
+        continous(contpin, 90);
+        type1 = false;
+        fase1 = false;
+        fase2 = true;
+      }
+      else if(type2) {
+        type2 = false;
+        fase1 = false;
+        fase2 = true;
+      }
+      else if(type3) {
+        fase2tijd = ; //deze is de hoek voor de fase 1 continuous draaiing
+        continous(contpin, 115);
+        delay(fase2tijd);
+        continous(contpin, 90);
+        type3 = false;
+        fase1 = false;
+        fase2 = true;
+      }
+    }
+    if (fase2) {
+      //Translatie van systeem naar voren via servomotor_translatie
+      vooruithoek = ; //hoek voor vooruitbeweging
+      servo270(vooruithoek);
+      delay(...) //wachten opdat systeem vooruit is bewogen
+      //rotatie rolband via DC motor
       
-      fase1 = false;
-      fase2 = true;
-      type1 = false;
-    }
-    else if (type2){
-      fase1 = false;
-      fase2 = true;
-      type2 = false;
-    }
-    else if (type3){
-      //draaien naar rechts servomotor_rotatie
-      servo_rotatie.write(50); //exacte waarde nog te bepalen
+      //activatie meten van de weegschaal
       
-      fase1 = false;
-      fase2 = true;
-      type3 = false;
+      if (weightreached) {
+        
+        middenachteruithoek = ; //hoek voor achteruitbeweging translatie
+        servo270(middenachteruithoek)
+        fase2 = false;
+        fase3 = true;
+      }
+      
     }
-  }
-  if (fase2) {
-    //Translatie van systeem naar voren via servomotor_translatie
-    servo_translatie.write(270);
-    
-    //rotatie rolband via DC motor
-    
-    //activatie meten van de weegschaal
-    
-    if (MyScale.readWeight() >= 0.98* border_weight){
-      //Terugkeren van de kar via servomotor_translatie
-      fase2 = false;
-      fase3 = true;
-    }
-  }
-  if (fase3) {
+    if (fase3) {
+      if (search()) {
     //activatie ultrasoonsensor
     //kleine rotatie van de grondplaat
     //als sensor iets vind dat kleiner is dan 10 cm, turn other side
     //als sensor iets vind dat tussen 14cm en 40 cm zit, container lock
-      fase3 = false;
-      fase4 = true;
+        fase3 = false;
+        fase4 = true;
+      }
+    }
+    if (fase4) {
+      //Translatie van systeem naar achteren via servomotor_translatie
+      middenachteruithoek = ;
+      servo270(middenachteruithoek)
+      fase4 = false;
+      fase5 = true;
+    }
+    if (fase5) {
+    //Translatie bakje 
+      bakjeachteruit = 270;
+        
+      servo270(bakjeachteruit);
+      fase5 = false;
+      fase6 = true;
+    }
+    if (fase6) {
+      
+    }
   }
-  if (fase4) {
-    //Translatie van systeem naar achteren via servomotor_translatie
-    servo_translatie.write(270);
-    fase4 = false;
-    fase5 = true;
+    
+  }
+    
     
   }
   
-  if (fase5) {
-    //Translatie bakje 
-    servo_bakje(270);
-      
-      if (MyScale.readWeight() == 0.00) {
-        //Bakje terugzetten 
-        servo_bakje(270);
-      }
-    fase5 = false;
-    fase6 = true;
-  }
+
+  
+
   
   if (fase6) {
     //Terugdraaien naar standaardpositie
@@ -203,3 +212,5 @@ void displayESP32Setup(String command){
 }
 
 // ------------------------------------------------------------------------------
+// Functies 
+
