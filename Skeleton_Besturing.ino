@@ -62,7 +62,8 @@ void loop() {
     }
   }
   if (fase2) {
-    //Translatie van systeem via servomotor_translatie
+    //Translatie van systeem naar voren via servomotor_translatie
+    servo_translatie.write(270);
     
     //rotatie rolband via DC motor
     
@@ -79,10 +80,32 @@ void loop() {
     //kleine rotatie van de grondplaat
     //als sensor iets vind dat kleiner is dan 10 cm, turn other side
     //als sensor iets vind dat tussen 14cm en 40 cm zit, container lock
-      //fase3 = false
-      //fase4 = true
+      fase3 = false;
+      fase4 = true;
   }
   if (fase4) {
+    //Translatie van systeem naar achteren via servomotor_translatie
+    servo_translatie.write(270);
+    fase4 = false;
+    fase5 = true;
     
+  }
+  
+  if (fase5) {
+    //Translatie bakje 
+    servo_bakje(270);
+      
+      if (MyScale.readWeight() == 0.00) {
+        //Bakje terugzetten 
+        servo_bakje(270);
+      }
+    fase5 = false;
+    fase6 = true;
+  }
+  
+  if (fase6) {
+    //Terugdraaien naar standaardpositie
+    
+    fase6 = false
   }
 }
