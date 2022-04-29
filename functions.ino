@@ -33,7 +33,7 @@ void continuous(int pin, int hoek) {
   servo_rotatie.write(hoek);
 }
 
-void search(right = 0){
+void search(int right = 0){
   //IN EEN SNELLE LUS!!!!
   // Clears the trigPin condition
   digitalWrite(trigPin, LOW);
