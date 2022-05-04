@@ -4,7 +4,8 @@
 //import commands app
 
 //Pins
-int contpin = 6;
+const int contpin = ;
+const int buttonPin = ;
 
 //Voor functies
 Servo servo_translatie;
@@ -67,6 +68,8 @@ void setup() {
 
   servo_rotatie.attach(2);
   servo_translatie.attach(3);
+  // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
   
   pinMode(10, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(24, INPUT); // Sets the echoPin as an INPUT
@@ -102,7 +105,7 @@ void loop() {
         fase2 = true;
       }
       else if(type3) {
-        int fase2tijd = 100; //deze is de hoek voor de fase 1 continuous draaiing
+        int fase2tijd = 100; //deze is de hoek voor de fase 2 continuous draaiing
         continuous(contpin, 115);
         delay(fase2tijd);
         continuous(contpin, 90);
@@ -124,9 +127,44 @@ void loop() {
         
         int middenachteruithoek = 100; //hoek voor achteruitbeweging translatie
         servo270(middenachteruithoek);
+        
         fase2 = false;
-        fase3 = true;
+        kalibratie = true;
       }
+    }
+    if (kalibratie) {
+      int buttonState = 0;
+      statement_rotatieknop = True;
+      
+      while (statement_rotatieknop){
+        buttonState = digitalRead(buttonPin);
+        if (buttonState == HIGH)
+          kalibratie = false;
+          fase3 = true;
+          statement_rotatieknop = false;
+        }
+        int fase1tijd = 100; //deze is de hoek voor de fase 1 continuous draaiing
+        continuous(contpin, 65);
+        delay(fase1tijd);
+        continuous(contpin, 90);
+      }
+  buttonState = digitalRead(buttonPin);
+
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == HIGH) {
+    // turn LED on:
+    digitalWrite(ledPin, HIGH);
+  } else {
+    // turn LED off:
+    digitalWrite(ledPin, LOW);
+  }
+      
+      
+      
+      
+      
+      
+      
       
     }
     if (fase3) {
