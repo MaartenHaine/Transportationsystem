@@ -216,6 +216,13 @@ void loop() {
       fase5 = false;
       fase6 = true;
     }
+    if (fase6) {
+      continuous(bakjecontpin, 110);
+      delay(bakjetijd);
+      continous(bakjecontpin, 90);
+      delay(500);
+      fase6 = false;
+      fase1 = true;
   }
     
   }
