@@ -6,6 +6,7 @@
 //Pins
 const int contpin = ;
 const int buttonPin = ;
+const int 
 
 //Voor functies
 Servo servo_translatie;
@@ -90,6 +91,7 @@ void loop() {
     Serial.println("Ontvangen commando: " + command); // Print het commando (debug)
     
     if (fase1) {
+      kalibratie()
       if(type1){
         int fase1tijd = 100; //deze is de hoek voor de fase 1 continuous draaiing
         continuous(contpin, 65);
@@ -100,14 +102,18 @@ void loop() {
         fase2 = true;
       }
       else if(type2) {
+        int fase2tijd = 100; //deze is de hoek voor de fase 2 continuous draaiing
+        continuous(contpin, 65);
+        delay(fase2tijd);
+        continuous(contpin, 90);
         type2 = false;
         fase1 = false;
         fase2 = true;
       }
       else if(type3) {
-        int fase2tijd = 100; //deze is de hoek voor de fase 2 continuous draaiing
-        continuous(contpin, 115);
-        delay(fase2tijd);
+        int fase3tijd = 100; //deze is de hoek voor de fase 2 continuous draaiing
+        continuous(contpin, 65);
+        delay(fase3tijd);
         continuous(contpin, 90);
         type3 = false;
         fase1 = false;
@@ -129,45 +135,12 @@ void loop() {
         servo270(middenachteruithoek);
         
         fase2 = false;
-        kalibratie = true;
+        fase3 = true;
       }
     }
-    if (kalibratie) {
-      int buttonState = 0;
-      statement_rotatieknop = True;
-      
-      while (statement_rotatieknop){
-        buttonState = digitalRead(buttonPin);
-        if (buttonState == HIGH)
-          kalibratie = false;
-          fase3 = true;
-          statement_rotatieknop = false;
-        }
-        int fase1tijd = 100; //deze is de hoek voor de fase 1 continuous draaiing
-        continuous(contpin, 65);
-        delay(fase1tijd);
-        continuous(contpin, 90);
-      }
-  buttonState = digitalRead(buttonPin);
-
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == HIGH) {
-    // turn LED on:
-    digitalWrite(ledPin, HIGH);
-  } else {
-    // turn LED off:
-    digitalWrite(ledPin, LOW);
-  }
-      
-      
-      
-      
-      
-      
-      
-      
-    }
+    
     if (fase3) {
+      kalibratie();
       if (search()) {
     //activatie ultrasoonsensor
     //kleine rotatie van de grondplaat
@@ -186,17 +159,12 @@ void loop() {
     }
     if (fase5) {
     //Translatie bakje 
-      int bakjeachteruit = 270;
-        
-      servo270(bakjeachteruit);
+      bakjetijd = 1000;
+      continuous(bakjecontpin, 65);
+      delay(bakjetijd);
+      continuous(bakjecontpin, 90);
       fase5 = false;
       fase6 = true;
-    }
-    if (fase6) {
-
-      //Terugdraaien naar standaardpositie
-    
-    fase6 = false;
     }
   }
     
@@ -264,6 +232,21 @@ void displayESP32Setup(String command){
 
 // ------------------------------------------------------------------------------
 // Functies 
+void kalibratie {
+  bool buttonState = false;
+  statement_rotatieknop = true;
+  while(statement_rotatieknop) {
+    buttonState = digitalRead(buttonPin);
+    continuous(contpin, 65);
+    delay(1000)
+    if (buttonState == HIGH) {
+      continuous(contpin, 90)
+      statement_rotatieknop = false;
+      return true;    
+    }
+  }
+}
+ 
 
 void servo270(int pos){
   pos =(180*pos)/270;
