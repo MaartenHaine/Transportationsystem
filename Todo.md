@@ -13,4 +13,4 @@
 - Configureren bewegingssysteem; zorgen dat na aantal boontjes behaalt het naar type 1 wijst en dat het dan alleen maar naar de andere kant moet draaien voor ultrasone. Dit slaagt dan de stappen op zodat we die later kunnen gebruiken voor de hercentralisatie die op type 2 is.
 - Kleursensor en LED implementeren.
 - APP configureren met arduino
-- kalibratie functie
+- Toevoegen functie DC-motor
