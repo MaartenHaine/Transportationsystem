@@ -3,6 +3,20 @@
 
 //import commands app
 
+
+//gewichtssensor
+#define WAIT
+
+#include <limits.h>
+#include <HX711.h>
+
+HX711 weight;
+
+#ifdef WAIT
+long minv,maxv,total;
+#endif
+
+
 //Pins
 int rotpin = ;
 int buttonPin = ;
@@ -73,6 +87,9 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 
 void setup() {
+  
+  
+  //pins
   pinMode(dcmotorPin, OUTPUT);
   pinMode(relaisPin, OUTPUT);
   pinMode(red_light_pin, OUTPUT);
@@ -91,6 +108,12 @@ void setup() {
   bool rolbandisbijbakjes = false;
   bool bakjelinks = false; //ligt eraan welk bakje we moeten gebruiken
   bool bakjerechts = false;
+  delay(100)
+    
+  //gewichtssensor
+  weight.begin(2,3);
+  weight.set_offset(216630.48);
+  weight.set_scale(2216.24);
 }
 
 
@@ -110,6 +133,7 @@ void loop() {
         continuous(rotpin, 65);
         delay(fase1tijd);
         continuous(rotpin, 90);
+        gewicht = type1gewicht
         type1 = false;
         fase1 = false;
         fase2 = true;
@@ -119,6 +143,7 @@ void loop() {
         continuous(rotpin, 65);
         delay(fase2tijd);
         continuous(rotpin, 90);
+        gewicht = type2gewicht
         type2 = false;
         fase1 = false;
         fase2 = true;
@@ -128,6 +153,7 @@ void loop() {
         continuous(rotpin, 65);
         delay(fase3tijd);
         continuous(rotpin, 90);
+        gewicht = type3gewicht
         type3 = false;
         fase1 = false;
         fase2 = true;
@@ -145,14 +171,17 @@ void loop() {
       speed = 100; //snelheid rotatie rolband van 0-255
       DCmotor(true, speed);
       //activatie meten van de weegschaal
-      if (weightreached) {
-        RGB_color(0, 255, 0);
-        DCmotor(false, speed);
-        delay(2000);
-        DCmotor(true, 0);
+      while (!weightreached) {
+        Serial.println(weight.get_units(1));
+        if (weight.get_units(1) <= gewicht) {
+          RGB_color(0, 255, 0);
+          DCmotor(false, speed);
+          delay(2000);
+          DCmotor(true, 0);
         
-        fase2 = false;
-        fase3 = true;
+          fase2 = false;
+          fase3 = true;
+        }
       }
     }
     
