@@ -4,9 +4,16 @@
 //import commands app
 
 //Pins
-const int contpin = ;
-const int buttonPin = ;
-const int 
+int rotpin = ;
+int buttonPin = ;
+
+int red_light_pin= ;
+int green_light_pin = ;
+int blue_light_pin = ;
+
+int dcmotorPin = ;
+int relaisPin = ;
+
 
 //Voor functies
 Servo servo_translatie;
@@ -19,7 +26,7 @@ long duration; // variable for the duration of sound wave travel
 int distance; // variable for the distance measurement
 
 //Om te testen
-bool weightreached = true;
+bool weightreached = false;
 
 //WIFI MODULE STUFF
 /* Als je je Arduino code wilt testen zonder ArduinoShield, zet de boolean withWifi dan op False! Je kan dan in de Seriële monitor de commando's ingeven die je normaal via de app
@@ -52,7 +59,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 // booleans:
   bool type1 = false; //De true of false waarde van de 3 types wordt bepaald door de app input
   bool type2 = false;
-  bool type3 = true;
+  bool type3 = false;
   bool fase1 = true; //bonensilo selectie
   bool fase2 = false; //translatie systeem richting bonen
   bool fase3 = false; //zoeken container
@@ -66,7 +73,12 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 
 void setup() {
-
+  pinMode(dcmotorPin, OUTPUT);
+  pinMode(relaisPin, OUTPUT);
+  pinMode(red_light_pin, OUTPUT);
+  pinMode(green_light_pin, OUTPUT);
+  pinMode(blue_light_pin, OUTPUT);
+  
   servo_rotatie.attach(2);
   servo_translatie.attach(3);
   // initialize the pushbutton pin as an input:
@@ -91,30 +103,31 @@ void loop() {
     Serial.println("Ontvangen commando: " + command); // Print het commando (debug)
     
     if (fase1) {
-      kalibratie()
+      kalibratie();
+      RGB_color(255, 0, 0);
       if(type1){
         int fase1tijd = 100; //deze is de hoek voor de fase 1 continuous draaiing
-        continuous(contpin, 65);
+        continuous(rotpin, 65);
         delay(fase1tijd);
-        continuous(contpin, 90);
+        continuous(rotpin, 90);
         type1 = false;
         fase1 = false;
         fase2 = true;
       }
       else if(type2) {
         int fase2tijd = 100; //deze is de hoek voor de fase 2 continuous draaiing
-        continuous(contpin, 65);
+        continuous(rotpin, 65);
         delay(fase2tijd);
-        continuous(contpin, 90);
+        continuous(rotpin, 90);
         type2 = false;
         fase1 = false;
         fase2 = true;
       }
       else if(type3) {
         int fase3tijd = 100; //deze is de hoek voor de fase 2 continuous draaiing
-        continuous(contpin, 65);
+        continuous(rotpin, 65);
         delay(fase3tijd);
-        continuous(contpin, 90);
+        continuous(rotpin, 90);
         type3 = false;
         fase1 = false;
         fase2 = true;
@@ -127,12 +140,16 @@ void loop() {
       delay(100); //wachten opdat systeem vooruit is bewogen
       //rotatie rolband via DC motor
       
-      //activatie meten van de weegschaal
       
+      
+      speed = 100; //snelheid rotatie rolband van 0-255
+      DCmotor(true, speed);
+      //activatie meten van de weegschaal
       if (weightreached) {
-        
-        int middenachteruithoek = 100; //hoek voor achteruitbeweging translatie
-        servo270(middenachteruithoek);
+        RGB_color(0, 255, 0);
+        DCmotor(false, speed);
+        delay(2000);
+        DCmotor(true, 0);
         
         fase2 = false;
         fase3 = true;
@@ -141,7 +158,9 @@ void loop() {
     
     if (fase3) {
       kalibratie();
-      if (search()) {
+      int middenachteruithoek = 100; //hoek voor achteruitbeweging translatie
+      servo270(middenachteruithoek);
+      if (search()) { 
     //activatie ultrasoonsensor
     //kleine rotatie van de grondplaat
     //als sensor iets vind dat kleiner is dan 10 cm, turn other side
@@ -163,20 +182,14 @@ void loop() {
       continuous(bakjecontpin, 65);
       delay(bakjetijd);
       continuous(bakjecontpin, 90);
+      delay(500)
+      RGB_color(255, 0, 0);
       fase5 = false;
       fase6 = true;
     }
   }
     
   }
-    
-    
- 
-  
-
- 
-
-
 
 // ---------------------------------------------------- Functies voor de connectie met ESP32; NIET AANPASSEN AUB ---------------------------------------------------------
 
@@ -232,15 +245,15 @@ void displayESP32Setup(String command){
 
 // ------------------------------------------------------------------------------
 // Functies 
-void kalibratie {
+void kalibratie() {
   bool buttonState = false;
   statement_rotatieknop = true;
   while(statement_rotatieknop) {
     buttonState = digitalRead(buttonPin);
-    continuous(contpin, 65);
+    continuous(rotpin, 65);
     delay(1000)
     if (buttonState == HIGH) {
-      continuous(contpin, 90)
+      continuous(rotpin, 90)
       statement_rotatieknop = false;
       return true;    
     }
@@ -257,6 +270,7 @@ void continuous(int pin, int hoek) {
   servo_rotatie.attach(pin);
   servo_rotatie.write(hoek);
 }
+
 
 void search(int right = 0){
   //IN EEN SNELLE LUS!!!!
@@ -287,4 +301,22 @@ void search(int right = 0){
   }
   return false;
   return right;
+}
+
+void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
+ {
+  analogWrite(red_light_pin, 255-red_light_value);
+  analogWrite(green_light_pin, 255-green_light_value);
+  analogWrite(blue_light_pin, 255-blue_light_value);
+}
+
+void DCmotor(bool richting, int speed) { 
+  if (richting) { //rotatie rolband normaal
+    digitalWrite(relaisPin, LOW);
+    analogWrite(dcmotorPin, speed);
+  }
+  else { //omegekeerde richting
+    digitalWrite(relaisPin, HIGH);
+    analogWrite(dcmotorPin, speed);
+  }
 }
