@@ -14,3 +14,4 @@
 - Kleursensor en LED implementeren.
 - APP configureren met arduino
 - Toevoegen functie DC-motor
+- fix de search()
