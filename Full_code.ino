@@ -222,8 +222,10 @@ void loop() {
   }
   if(fase2) {
     //translatie systeem naar voren via servomotor
-    int vooruithoek = 100; //hoek voor vooruitbeweging
-    servo270(vooruithoek);
+    int tijdvooruit = 2000; //hoek voor vooruitbeweging //hoek voor achteruitbeweging translatie
+    continuous(systpin, 65);
+    delay(tijdvooruit);
+    continouos(systpin, 90);
     delay(100); //wachten opdat systeem vooruit is bewogen
 
     
@@ -247,8 +249,10 @@ void loop() {
   }
   if (fase3) {
     kalibratie();
-    int middenachteruithoek = 100; //hoek voor achteruitbeweging translatie
-    servo270(middenachteruithoek);
+    int tijdachteruit = 1000; //hoek voor achteruitbeweging translatie
+    continuous(systpin, 65);
+    delay(tijdachteruit);
+    continouos(systpin, 90);
     if (search()) { 
       //activatie ultrasoonsensor
       //kleine rotatie van de grondplaat
@@ -260,8 +264,10 @@ void loop() {
   }
   if (fase4) {
     //Translatie van systeem naar achteren via servomotor_translatie
-    int middenachteruithoek = 100;
-    servo270(middenachteruithoek);
+    int middenachteruithoek = 1000;
+    continuous(systpin, 65);
+    delay(middenachteruit);
+    continouos(systpin, 90);
     fase4 = false;
     fase5 = true;
   }
@@ -360,8 +366,9 @@ void kalibratie() {
   }
 }
 
-void servo270(int pos){
-  pos =(180*pos)/270;
+void servo270(int pos, int pin){
+  pos =(180*pos)/295;
+  servo_translate.attach(pin, 400, 2600);
   servo_translatie.write(pos);
 }
 
