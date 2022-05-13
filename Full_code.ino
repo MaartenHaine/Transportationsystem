@@ -225,7 +225,7 @@ void loop() {
     int tijdvooruit = 2000; //hoek voor vooruitbeweging //hoek voor achteruitbeweging translatie
     continuous(systpin, 65);
     delay(tijdvooruit);
-    continouos(systpin, 90);
+    continouos(systpin, 89);
     delay(100); //wachten opdat systeem vooruit is bewogen
 
     
@@ -252,7 +252,7 @@ void loop() {
     int tijdachteruit = 1000; //hoek voor achteruitbeweging translatie
     continuous(systpin, 65);
     delay(tijdachteruit);
-    continouos(systpin, 90);
+    continouos(systpin, 89);
     if (search()) { 
       //activatie ultrasoonsensor
       //kleine rotatie van de grondplaat
@@ -267,7 +267,7 @@ void loop() {
     int middenachteruithoek = 1000;
     continuous(systpin, 65);
     delay(middenachteruit);
-    continouos(systpin, 90);
+    continouos(systpin, 89);
     fase4 = false;
     fase5 = true;
   }
@@ -275,9 +275,9 @@ void loop() {
     //Translatie bakje 
     int bakjetijd1 = 1000;
     
-    continuous(bakjepin, 65);
+    servo270(270, bakjepin);
     delay(bakjetijd1);
-    continuous(bakjepin, 90);
+    servo270(0, bakjepin);
     delay(500);
     
     RGB_color(255, 0, 0);
@@ -286,9 +286,9 @@ void loop() {
   }
   if (fase6) {
     int bakjetijd2 = 1000;
-    continuous(bakjepin, 110);
+    servo270(270, bakjepin);
     delay(bakjetijd2);
-    continuous(bakjepin, 90);
+    servo270(0, bakjepin);
     delay(500);
     fase6 = false;
     fase1 = true;
