@@ -206,7 +206,9 @@ void loop() {
       Serial.println(0.32);
     }
   }
-  
+  if(type1 && type2 && type3){
+    sendWifi(gewichten);
+  }
   if (fase1) {
     RGB_color(255, 0, 0);
     Serial.println(1);
